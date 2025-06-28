@@ -1,3 +1,6 @@
+"""Mathematical utility functions."""
+
+
 def largest_pfactor(n: int) -> int:
     """Compute the largest prime factor of n."""
     if n < 2:
@@ -9,3 +12,8 @@ def largest_pfactor(n: int) -> int:
         else:
             i += 1
     return n
+
+
+def irreducible(n: int) -> bool:
+    """Check if arctan(n) is irreducible."""
+    return largest_pfactor(1 + n**2) >= 2 * n

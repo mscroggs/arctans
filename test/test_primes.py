@@ -1,5 +1,5 @@
 import pytest
-from todd import largest_pfactor
+from arctans.utils import largest_pfactor
 
 primes = [2]
 for i in range(3, 1000, 2):
@@ -8,7 +8,6 @@ for i in range(3, 1000, 2):
             break
     else:
         primes.append(i)
-
 
 
 @pytest.mark.parametrize("n", range(2, 1000))
