@@ -5,6 +5,20 @@ from functools import cache
 primes = [2]
 
 
+def extract_real_imag(n: complex) -> tuple[int, int]:
+    """Extract the real and complex parts of a Gaussian integer."""
+    assert is_gaussian_integer(n)
+    if n.real > 0:
+        real = int(n.real + 0.1)
+    else:
+        real = int(n.real - 0.1)
+    if n.imag > 0:
+        imag = int(n.imag + 0.1)
+    else:
+        imag = int(n.imag - 0.1)
+    return real, imag
+
+
 def largest_pfactor(n: int) -> int:
     """Compute the largest prime factor of n."""
     if n < 2:
@@ -40,15 +54,7 @@ def irreducible(n: int) -> bool:
 
 def is_gaussian_prime(n: complex) -> bool:
     """Check if n is a Gaussian prime."""
-    assert is_gaussian_integer(n)
-    if n.real > 0:
-        real = int(n.real + 0.1)
-    else:
-        real = int(n.real - 0.1)
-    if n.imag > 0:
-        imag = int(n.imag + 0.1)
-    else:
-        imag = int(n.imag - 0.1)
+    real, imag = extract_real_imag(n)
     if imag == 0 or real == 0:
         k = abs(real) + abs(imag)
         return k % 4 == 3 and is_prime(k)
@@ -57,15 +63,7 @@ def is_gaussian_prime(n: complex) -> bool:
 
 def is_gaussian_unit(n: complex) -> bool:
     """Check if n is a Gaussian unit."""
-    assert is_gaussian_integer(n)
-    if n.real > 0:
-        real = int(n.real + 0.1)
-    else:
-        real = int(n.real - 0.1)
-    if n.imag > 0:
-        imag = int(n.imag + 0.1)
-    else:
-        imag = int(n.imag - 0.1)
+    real, imag = extract_real_imag(n)
     return abs(real) + abs(imag) <= 1
 
 

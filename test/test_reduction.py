@@ -1,4 +1,5 @@
 import pytest
+import sympy
 from arctans import ArctanSum, irreducible, reduce, convert_rational
 from utils import isclose
 
@@ -26,10 +27,9 @@ def test_convert_rational(numerator, denominator):
 
 
 @pytest.mark.parametrize("n", reducible)
-def test_reduction(n):
-    arctan_n = ArctanSum((1, n))
+@pytest.mark.parametrize("c", [-2, -1, 1, 3, sympy.Rational(1, 2)])
+def test_reduction(c, n):
+    arctan_n = ArctanSum((c, n))
     arctan_sum = reduce(arctan_n)
-    print(arctan_n)
-    print(arctan_sum)
     assert isclose(float(arctan_n), float(arctan_sum))
     assert arctan_sum.nterms > 1
