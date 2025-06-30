@@ -25,7 +25,7 @@ author = "Matthew Scroggs"
 
 with open("../pypoject.toml") as f:
     # The short X.Y version
-    version = f.read().split("version = \"")[1].split("\"")[0]
+    version = f.read().split('version = "')[1].split('"')[0]
     # The full version, including alpha/beta/rc tags
     release = version
 
