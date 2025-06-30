@@ -23,7 +23,7 @@ project = "arctans"
 copyright = "2025, Matthew Scroggs"
 author = "Matthew Scroggs"
 
-with open("../pypoject.toml") as f:
+with open("../pyproject.toml") as f:
     # The short X.Y version
     version = f.read().split('version = "')[1].split('"')[0]
     # The full version, including alpha/beta/rc tags
