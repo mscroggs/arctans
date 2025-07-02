@@ -13,3 +13,21 @@ def test_simplify():
 def test_machins_formula():
     s = ArctanSum((16, sympy.Rational(1, 5)), (-4, sympy.Rational(1, 239)))
     assert isclose(float(s), pi)
+
+
+def test_add():
+    a = ArctanSum((16, sympy.Rational(1, 5)))
+    b = ArctanSum((-4, sympy.Rational(1, 239)))
+    assert isclose(float(a + b), pi)
+
+
+def test_sub():
+    a = ArctanSum((16, sympy.Rational(1, 5)))
+    b = ArctanSum((4, sympy.Rational(1, 239)))
+    assert isclose(float(a - b), pi)
+
+
+def test_multiply():
+    a = ArctanSum((4, sympy.Rational(1, 5)), (-1, sympy.Rational(1, 239)))
+    assert isclose(float(4 * a), pi)
+    assert isclose(float(a * 4), pi)
