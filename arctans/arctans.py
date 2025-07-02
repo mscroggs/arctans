@@ -33,6 +33,9 @@ class ArctanSum:
 
     def __float__(self) -> float:
         """Convert to a float."""
+        for i, j in self._terms:
+            print(f"{i} * arctan({j})")
+            print(i * math.atan(j))
         return sum(float(i) * math.atan(float(j)) for i, j in self._terms)
 
     @property
