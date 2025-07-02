@@ -47,7 +47,7 @@ def is_prime(n: int) -> bool:
     return n in primes
 
 
-def irreducible(n: int) -> bool:
+def is_irreducible(n: int) -> bool:
     """Check if arctan(n) is irreducible."""
     return largest_pfactor(1 + n**2) >= 2 * n
 

@@ -1,19 +1,14 @@
 import pytest
 import sympy
-from arctans import ArctanSum, irreducible, reduce, convert_rational
+from arctans import ArctanSum, is_irreducible, reduce, convert_rational
 from utils import isclose
 
 reducible = [3, 7, 8, 13, 17, 18, 21]
 
 
-@pytest.mark.parametrize("n", [i for i in range(1, 23) if i not in reducible])
+@pytest.mark.parametrize("n", range(1, 23))
 def test_irreducible(n):
-    assert irreducible(n)
-
-
-@pytest.mark.parametrize("n", reducible)
-def test_reducible(n):
-    assert not irreducible(n)
+    assert is_irreducible(n) == (n not in reducible)
 
 
 @pytest.mark.parametrize("numerator", range(1, 20))

@@ -39,15 +39,16 @@ class ArctanSum:
 
     def __float__(self) -> float:
         """Convert to a float."""
-        return sum(float(i) * (math.pi / 2 if j.is_infinite else math.atan(float(j))) for i, j in self._terms)
+        return sum(
+            float(i) * (math.pi / 2 if j.is_infinite else math.atan(float(j)))
+            for i, j in self._terms
+        )
 
     def __mul__(self, other):
         """Multiply."""
         try:
             s_o = sympy.S(other)
-            return ArctanSum(*[
-                (s_o * i, j) for i, j in self.terms
-            ])
+            return ArctanSum(*[(s_o * i, j) for i, j in self.terms])
         except sympy.SympifyError:
             return NotImplemented
 
@@ -55,9 +56,7 @@ class ArctanSum:
         """Multiply from the right."""
         try:
             s_o = sympy.S(other)
-            return ArctanSum(*[
-                (i * s_o, j) for i, j in self.terms
-            ])
+            return ArctanSum(*[(i * s_o, j) for i, j in self.terms])
         except sympy.SympifyError:
             return NotImplemented
 
