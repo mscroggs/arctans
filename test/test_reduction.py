@@ -19,6 +19,7 @@ def test_convert_rational_integer(coefficient, arctan):
     assert isclose(float(arctan_n), float(arctan_sum))
     for i, j in arctan_sum.terms:
         assert j.numerator == 1
+        assert i != 0
 
 
 @pytest.mark.parametrize("numerator", range(1, 20))
@@ -29,6 +30,7 @@ def test_convert_rational(numerator, denominator):
     assert isclose(float(arctan_n), float(arctan_sum))
     for i, j in arctan_sum.terms:
         assert j.numerator == 1
+        assert i != 0
 
 
 @pytest.mark.parametrize("n", reducible)
@@ -46,3 +48,12 @@ def test_reduction_leads_to_irreducible(n):
     reduced = reduce(arctan_n)
     for _, i in reduced.terms:
         assert i == 0 or i == 1 or is_irreducible(1 / i)
+
+
+@pytest.mark.parametrize("n", range(1, 300))
+def test_reduction_nonzero_coefficients(n):
+    arctan_n = Arctan(1, sympy.Rational(1, n))
+    arctan_sum = reduce(arctan_n)
+    assert isclose(float(arctan_n), float(arctan_sum))
+    for i, _ in arctan_sum.terms:
+        assert i != 0
