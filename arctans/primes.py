@@ -1,22 +1,24 @@
 """Mathematical utility functions."""
 
 from functools import cache
+from arctans.gaussian_integer import GaussianInteger
 
 primes = [2]
 
 
-def extract_real_imag(n: complex) -> tuple[int, int]:
-    """Extract the real and complex parts of a Gaussian integer."""
-    assert is_gaussian_integer(n)
-    if n.real > 0:
-        real = int(n.real + 0.1)
-    else:
-        real = int(n.real - 0.1)
-    if n.imag > 0:
-        imag = int(n.imag + 0.1)
-    else:
-        imag = int(n.imag - 0.1)
-    return real, imag
+@cache
+def pfactors(n: int) -> list[int]:
+    """Get list of all prime factors of n."""
+    out = []
+
+    p = 2
+    while n > 1:
+        while n % p == 0:
+            out.append(p)
+            n //= p
+        p += 1
+
+    return out
 
 
 def largest_pfactor(n: int) -> int:
@@ -52,36 +54,21 @@ def is_irreducible(n: int) -> bool:
     return largest_pfactor(1 + n**2) >= 2 * n
 
 
-def is_gaussian_prime(n: complex) -> bool:
+def is_gaussian_prime(n: GaussianInteger) -> bool:
     """Check if n is a Gaussian prime."""
-    real, imag = extract_real_imag(n)
-    if imag == 0 or real == 0:
-        k = abs(real) + abs(imag)
+    if n.imag == 0 or n.real == 0:
+        k = abs(n.real) + abs(n.imag)
         return k % 4 == 3 and is_prime(k)
-    return is_prime(real**2 + imag**2)
+    return is_prime(n.real**2 + n.imag**2)
 
 
-def is_gaussian_unit(n: complex) -> bool:
+def is_gaussian_unit(n: GaussianInteger) -> bool:
     """Check if n is a Gaussian unit."""
-    real, imag = extract_real_imag(n)
-    return abs(real) + abs(imag) <= 1
-
-
-def is_gaussian_integer(n: complex) -> bool:
-    """Check if n is a Gaussian integer."""
-    if n.real > 0:
-        real = int(n.real + 0.1)
-    else:
-        real = int(n.real - 0.1)
-    if n.imag > 0:
-        imag = int(n.imag + 0.1)
-    else:
-        imag = int(n.imag - 0.1)
-    return abs(n - real - 1j * imag) < 1e-10
+    return abs(n.real) + abs(n.imag) <= 1
 
 
 @cache
-def complex_factorise(n: complex) -> list[complex]:
+def complex_factorise(n: GaussianInteger) -> list[GaussianInteger]:
     """Factorise a Gaussian integer into Gaussian primes."""
     if is_gaussian_unit(n) or is_gaussian_prime(n):
         return [n]
@@ -90,12 +77,9 @@ def complex_factorise(n: complex) -> list[complex]:
         for j in range(-lim, lim + 1):
             if abs(i) + abs(j) <= 1:
                 continue
-            if not is_gaussian_integer(i + j * 1j):
+            m = GaussianInteger(i, j)
+            if not is_gaussian_prime(m):
                 continue
-            m = i + j * 1j
-            d = n / m
-            if abs(d) > 1:
-                continue
-            if is_gaussian_integer(d):
-                return [m] + complex_factorise(d)
+            if n % m == 0:
+                return [m] + complex_factorise(n // m)
     raise RuntimeError(f"Could not fund factor of non-prime number: {n}")

@@ -1,8 +1,10 @@
 """Functions for reducing arctans."""
 
+import math as _math
 import sympy
-from arctans.primes import largest_pfactor, is_gaussian_prime, complex_factorise, extract_real_imag
-from arctans.arctans import ArctanSum
+from arctans.primes import largest_pfactor, is_gaussian_prime, complex_factorise
+from arctans.arctans import Arctan, Zero, AbstractTerm
+from arctans.gaussian_integer import GaussianInteger
 
 
 def irreducible(n: int) -> bool:
@@ -10,34 +12,36 @@ def irreducible(n: int) -> bool:
     return largest_pfactor(1 + n**2) >= 2 * n
 
 
-def convert_rational(arctan: ArctanSum) -> ArctanSum:
+def convert_rational(arctan: AbstractTerm) -> AbstractTerm:
     """Convert a rational arccotan into a sum of integral arccotans."""
     assert arctan.nterms == 1
-    if arctan.terms[0][1].denominator == 1:
+    if arctan.terms[0][1].numerator == 1:
         return arctan
-    b = [arctan.terms[0][1].numerator]
-    a = [arctan.terms[0][1].denominator]
-    n = []
+    b = arctan.terms[0][1].numerator
+    a = arctan.terms[0][1].denominator
 
-    while b[-1] > 0:
-        n.append(a[-1] // b[-1])
-        b.append(a[-1] % b[-1])
-        a.append(a[-1] * n[-1] + b[-2])
-    return ArctanSum(
-        *[((-1) ** i * arctan.terms[0][0], sympy.Rational(1, j)) for i, j in enumerate(n)]
-    )
+    out = Zero()
+    sign = 1
+    while b > 0:
+        n = a // b
+        a, b = a * n + b, a % b
+        out += Arctan(sign * arctan.terms[0][0], sympy.Rational(1, n))
+        sign *= -1
+    return out
 
 
-def reduce(arctan: ArctanSum) -> ArctanSum:
+def reduce(arctan: Arctan) -> AbstractTerm:
     """Reduce an arctan."""
     assert arctan.nterms == 1
 
-    complex = arctan.terms[0][1].denominator + 1j * arctan.terms[0][1].numerator
-    if is_gaussian_prime(complex):
+    n = GaussianInteger(arctan.terms[0][1].denominator, arctan.terms[0][1].numerator)
+    if is_gaussian_prime(n):
         return arctan
 
-    fractions = []
-    for f in complex_factorise(complex):
-        real, imag = extract_real_imag(f)
-        fractions.append((arctan.terms[0][0], sympy.Rational(imag, real)))
-    return ArctanSum(*fractions)
+    out = Zero()
+    for f in complex_factorise(n):
+        out += convert_rational(Arctan(arctan.terms[0][0], sympy.Rational(f.imag, f.real)))
+
+    c = int(_math.floor((float(arctan) - float(out)) * 4 / _math.pi + 0.1))
+    out += Arctan(c, 1)
+    return out

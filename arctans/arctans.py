@@ -1,12 +1,106 @@
 """Arctans."""
 
+from abc import ABC, abstractmethod
 from typing import Any
 import math
 import sympy
 from sympy.core.expr import Expr
 
 
-class ArctanSum:
+class AbstractTerm(ABC):
+    """Abstract term."""
+
+    @property
+    @abstractmethod
+    def terms(self) -> list[tuple[Expr, Expr]]:
+        """Return list of (coefficient, arctan) pairs."""
+
+    def __add__(self, other):
+        if isinstance(other, AbstractTerm):
+            return ArctanSum(*self.terms, *other.terms)
+        return NotImplemented
+
+    def __iadd__(self, other):
+        if not isinstance(other, AbstractTerm):
+            return NotImplemented
+        self = ArctanSum(*self.terms, *other.terms)
+        return self
+
+    def __float__(self) -> float:
+        """Convert to a float."""
+        return sum(
+            float(i) * (math.pi / 2 if j.is_infinite else math.atan(float(j)))
+            for i, j in self.terms
+        )
+
+    def __mul__(self, other):
+        """Multiply."""
+        try:
+            s_o = sympy.S(other)
+            return ArctanSum(*[(s_o * i, j) for i, j in self.terms])
+        except sympy.SympifyError:
+            return NotImplemented
+
+    def __rmul__(self, other):
+        """Multiply from the right."""
+        try:
+            s_o = sympy.S(other)
+            return ArctanSum(*[(i * s_o, j) for i, j in self.terms])
+        except sympy.SympifyError:
+            return NotImplemented
+
+    def __sub__(self, other):
+        """Subtract."""
+        if isinstance(other, ArctanSum):
+            return ArctanSum(*self.terms, *[(-i, j) for i, j in other.terms])
+        else:
+            return NotImplemented
+
+    @property
+    def nterms(self) -> int:
+        """Number of terms."""
+        return len(self.terms)
+
+
+class Zero(AbstractTerm):
+    """Zero."""
+
+    @property
+    def terms(self) -> list[tuple[Expr, Expr]]:
+        """Return list of (coefficient, arctan) pairs."""
+        return []
+
+    def __str__(self) -> str:
+        """Convert to a string."""
+        return "0"
+
+
+class Arctan(AbstractTerm):
+    """A single arctan."""
+
+    def __init__(self, coefficient: Any, arctan: Any):
+        c = sympy.S(coefficient)
+        a = sympy.S(arctan)
+        if a.is_infinite:
+            a = sympy.Integer(1)
+            c *= 2
+        if not a.is_infinite and a < 0:
+            a *= -1
+            c *= -1
+        self._coefficient = c
+        self._arctan = a
+
+    @property
+    def terms(self) -> list[tuple[Expr, Expr]]:
+        """Return list of (coefficient, arctan) pairs."""
+        return [(self._coefficient, self._arctan)]
+
+    def __str__(self) -> str:
+        """Convert to a string."""
+        return f"{self._coefficient}[{self._arctan}]"
+
+
+class ArctanSum(AbstractTerm):
     """The sum of some arctans."""
 
     def __init__(self, *terms: tuple[Any, Any]):
@@ -31,53 +125,11 @@ class ArctanSum:
 
     def __repr__(self) -> str:
         """Representation."""
-        return self.__str__()
+        return "ArctanSum(" + " + ".join(f"{i}[{j}]" for i, j in self._terms) + ")"
 
     def __str__(self) -> str:
         """Convert to a string."""
-        return "ArctanSum(" + " + ".join(f"{i}[{j}]" for i, j in self._terms) + ")"
-
-    def __float__(self) -> float:
-        """Convert to a float."""
-        return sum(
-            float(i) * (math.pi / 2 if j.is_infinite else math.atan(float(j)))
-            for i, j in self._terms
-        )
-
-    def __mul__(self, other):
-        """Multiply."""
-        try:
-            s_o = sympy.S(other)
-            return ArctanSum(*[(s_o * i, j) for i, j in self.terms])
-        except sympy.SympifyError:
-            return NotImplemented
-
-    def __rmul__(self, other):
-        """Multiply from the right."""
-        try:
-            s_o = sympy.S(other)
-            return ArctanSum(*[(i * s_o, j) for i, j in self.terms])
-        except sympy.SympifyError:
-            return NotImplemented
-
-    def __add__(self, other):
-        """Add."""
-        if isinstance(other, ArctanSum):
-            return ArctanSum(*self.terms, *other.terms)
-        else:
-            return NotImplemented
-
-    def __sub__(self, other):
-        """Subtract."""
-        if isinstance(other, ArctanSum):
-            return ArctanSum(*self.terms, *[(-i, j) for i, j in other.terms])
-        else:
-            return NotImplemented
-
-    @property
-    def nterms(self) -> int:
-        """Number of terms."""
-        return len(self._terms)
+        return "(" + " + ".join(f"{i}[{j}]" for i, j in self._terms) + ")"
 
     @property
     def terms(self) -> list[tuple[Expr, Expr]]:
