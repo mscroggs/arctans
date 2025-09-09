@@ -20,6 +20,11 @@ class AbstractTerm(ABC):
     def term_dict(self) -> dict[Expr, Expr]:
         """Return dictionary {arctan: coefficient}."""
 
+    def __eq__(self, other):
+        if isinstance(other, AbstractTerm):
+            return self.terms == other.terms
+        return False
+
     def __add__(self, other):
         if isinstance(other, AbstractTerm):
             return ArctanSum(*self.terms, *other.terms)
