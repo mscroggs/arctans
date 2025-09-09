@@ -11,6 +11,7 @@ def generate(
     max_denominator: int = 100,
     max_numerator: int = 1,
     max_terms: int | None = None,
+    max_coefficient_denominator: int | None = None,
 ) -> list[AbstractTerm]:
     """Generate new formulae involving arctans."""
     value = float(known_formulae[0])
@@ -29,6 +30,12 @@ def generate(
                         if new_f in known_formulae or new_f in new_formulae:
                             continue
                         if max_terms is not None and len(new_f.terms) >= max_terms:
+                            continue
+                        if (
+                            max_coefficient_denominator is not None
+                            and max(c.denominator for c, a in new_f.terms)
+                            > max_coefficient_denominator
+                        ):
                             continue
                         new_formulae.append(new_f)
     return new_formulae
