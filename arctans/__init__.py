@@ -1,4 +1,4 @@
-"""Reducing arctans."""
+"""Arctans."""
 
 from arctans.arctans import ArctanSum, Arctan, Zero
 from arctans.gaussian_integer import GaussianInteger

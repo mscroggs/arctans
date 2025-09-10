@@ -1,4 +1,4 @@
-"""Generate new formulae."""
+"""Generation of new formulae."""
 
 import sympy
 from arctans.arctans import Arctan, AbstractTerm
@@ -13,7 +13,19 @@ def generate(
     max_terms: int | None = None,
     max_coefficient_denominator: int | None = None,
 ) -> list[AbstractTerm]:
-    """Generate new formulae involving arctans."""
+    """Generate new formulae.
+
+    Args:
+        known_formulae: Known formulae that all have the same value
+        max_numerator: The maximum numerator to use for arctan arguments
+        max_denominator: The maximum denominator to use for arctan arguments
+        max_terms: The maximum number of arctan terms to include in the new formulae
+        max_coefficient_denominator: The maximum allowbale denominator to use in the
+            coefficients in the new formulae
+
+    Returns:
+        A list of new formulae that have the same value as the known formulae
+    """
     value = float(known_formulae[0])
     for i in known_formulae[1:]:
         assert abs(float(i) - value) < 0.0001

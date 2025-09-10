@@ -8,7 +8,12 @@ class GaussianInteger:
     """A Gaussian integer."""
 
     def __init__(self, re: int, im: int):
-        """Initialise."""
+        """Initialise.
+
+        Args:
+            re: The real part
+            im: The imaginary part
+        """
         self._re = re
         self._im = im
 
@@ -103,4 +108,5 @@ class GaussianInteger:
         return self._im
 
     def conjugate(self) -> GaussianInteger:
+        """Compute the complex conjugate."""
         return GaussianInteger(self._re, -self._im)
