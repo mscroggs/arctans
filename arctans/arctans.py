@@ -87,7 +87,6 @@ class Zero(AbstractTerm):
         return {}
 
     def __str__(self) -> str:
-        """Convert to a string."""
         return "0"
 
     def __float__(self) -> float:
@@ -98,6 +97,13 @@ class Arctan(AbstractTerm):
     """A single arctan."""
 
     def __init__(self, coefficient: Any, arctan: Any):
+        """Initialise a single scaled arctan term.
+
+        Args:
+            coefficient: The coefficient that the arctan is scaled by
+            arctan: The argument of the arctan
+
+        """
         c = sympy.S(coefficient)
         a = sympy.S(arctan)
         if a.is_infinite:
@@ -118,7 +124,6 @@ class Arctan(AbstractTerm):
         return {self._arctan: self._coefficient}
 
     def __str__(self) -> str:
-        """Convert to a string."""
         return f"{self._coefficient}[{self._arctan}]"
 
 
@@ -126,7 +131,11 @@ class ArctanSum(AbstractTerm):
     """The sum of some arctans."""
 
     def __init__(self, *terms: tuple[Any, Any]):
-        """Initialise."""
+        """Initialise.
+
+        Args:
+            terms: A list of coefficient and arctan argument pairs
+        """
         terms_dict = {}
         for c, a in terms:
             c = sympy.S(c)
@@ -147,11 +156,9 @@ class ArctanSum(AbstractTerm):
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])
 
     def __repr__(self) -> str:
-        """Representation."""
         return "ArctanSum(" + " + ".join(f"{i}[{j}]" for i, j in self._terms) + ")"
 
     def __str__(self) -> str:
-        """Convert to a string."""
         return "(" + " + ".join(f"{i}[{j}]" for i, j in self._terms) + ")"
 
     @property
