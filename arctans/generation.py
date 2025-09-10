@@ -2,7 +2,7 @@
 
 import sympy
 from arctans.arctans import Arctan, AbstractTerm
-from arctans import reduce
+from arctans.reduction import reduce
 
 
 def generate(
