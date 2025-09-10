@@ -1,88 +1,94 @@
 """Functions for reducing arctans."""
 
 import math as _math
-import sympy
 from arctans.primes import is_gaussian_prime, complex_factorise
-from arctans.arctans import Arctan, Zero, AbstractTerm
-from arctans.gaussian_integer import GaussianInteger
+from arctans.arctans import arccotan, arctan, Zero, AbstractTerm, Arctan
+from arctans.numbers import Rational, GaussianInteger
 
 
-def convert_rational_single_arctan(arctan: Arctan) -> AbstractTerm:
+def convert_rational_single_arctan(a: Arctan) -> AbstractTerm:
     """Convert a rational arccotangent into a sum of integral arccotangents.
 
     Args:
-        arctan: An arctan
+        a: An arctan
 
     Returns:
         A sum of integral arccotangents
     """
-    if arctan.terms[0][1].numerator == 1:
-        return arctan
-    b = arctan.terms[0][1].numerator
-    a = arctan.terms[0][1].denominator
+    if a.terms[0][1].numerator == 1:
+        return a
+    beta = a.terms[0][1].numerator
+    alpha = a.terms[0][1].denominator
 
     out = Zero()
+    print("a", out, type(out))
     sign = 1
-    while b > 0:
-        n = a // b
-        a, b = a * n + b, a % b
-        out += Arctan(sign * arctan.terms[0][0], sympy.Rational(1, n))
+    while beta > 0:
+        n = alpha // beta
+        alpha, beta = alpha * n + beta, alpha % beta
+        print("v", a.terms[0][0], type(a.terms[0][0]))
+        print("w", arccotan(n), type(arccotan(n)))
+        print("x", a.terms[0][0] * arccotan(n), type(a.terms[0][0] * arccotan(n)))
+        assert isinstance(a.terms[0][0] * arccotan(n), AbstractTerm)
+        print("y", sign * a.terms[0][0] * arccotan(n), type(sign * a.terms[0][0] * arccotan(n)))
+        out += sign * a.terms[0][0] * arccotan(n)
         sign *= -1
+        print("z", out, type(out))
     return out
 
 
-def convert_rational(arctan: AbstractTerm) -> AbstractTerm:
+def convert_rational(a: AbstractTerm) -> AbstractTerm:
     """Convert a rational arccotangent into a sum of integral arccotangents.
 
     Args:
-        arctan: An arctan or sum of arctans
+        a: An arctan or sum of arctans
 
     Returns:
         A sum of integral arccotangents
     """
-    if isinstance(arctan, Arctan):
-        return convert_rational_single_arctan(arctan)
+    if isinstance(a, Arctan):
+        return convert_rational_single_arctan(a)
     out = Zero()
-    for c, a in arctan.terms:
-        out += convert_rational_single_arctan(Arctan(c, a))
+    for i, j in a.terms:
+        out += i * convert_rational_single_arctan(arctan(j))
     return out
 
 
-def reduce_single_arctan(arctan: Arctan) -> AbstractTerm:
+def reduce_single_arctan(a: Arctan) -> AbstractTerm:
     """Express an arctan as a sum of irreducible integral arccotangents.
 
     Args:
-        arctan: An arctan
+        a: An arctan
 
     Returns:
         A sum of irreducible integral arccotangents
     """
-    n = GaussianInteger(arctan.terms[0][1].denominator, arctan.terms[0][1].numerator)
+    n = GaussianInteger(a.terms[0][1].denominator, a.terms[0][1].numerator)
     if is_gaussian_prime(n):
-        return arctan
+        return a
 
     out = Zero()
     for f in complex_factorise(n):
-        out += convert_rational(Arctan(arctan.terms[0][0], sympy.Rational(f.imag, f.real)))
+        out += a.terms[0][0] * convert_rational(arctan(Rational(f.imag, f.real)))
 
-    c = int(_math.floor((float(arctan) - float(out)) * 4 / _math.pi + 0.1))
-    out += Arctan(c, 1)
+    c = int(_math.floor((float(a) - float(out)) * 4 / _math.pi + 0.1))
+    out += c * arctan(1)
     return out
 
 
-def reduce(arctan: AbstractTerm) -> AbstractTerm:
+def reduce(a: AbstractTerm) -> AbstractTerm:
     """Express an arctan as a sum of irreducible integral arccotangents.
 
     Args:
-        arctan: An arctan or sum of arctans
+        a: An arctan or sum of arctans
 
     Returns:
         A sum of irreducible integral arccotangents
     """
-    if isinstance(arctan, Arctan):
-        return reduce_single_arctan(arctan)
+    if isinstance(a, Arctan):
+        return reduce_single_arctan(a)
 
     out = Zero()
-    for c, a in arctan.terms:
-        out += reduce_single_arctan(Arctan(c, a))
+    for i, j in a.terms:
+        out += i * reduce_single_arctan(arctan(j))
     return out

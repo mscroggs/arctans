@@ -1,24 +1,24 @@
 from math import pi
 import sympy
-from arctans import ArctanSum
+from arctans import arctan, arccotan
 from arctans.arctans import AbstractTerm
 from utils import isclose
 
 
 def test_simplify():
-    s = ArctanSum((1, 5), (2, 5))
+    s = arctan(5) + 2 * arctan(5)
     assert s.nterms == 1
     assert s.terms[0] == (3, 5)
 
 
 def test_machins_formula():
-    s = ArctanSum((16, sympy.Rational(1, 5)), (-4, sympy.Rational(1, 239)))
+    s = 16 * arccotan(5) - 4 * arccotan(239)
     assert isclose(float(s), pi)
 
 
 def test_add():
-    a = ArctanSum((16, sympy.Rational(1, 5)))
-    b = ArctanSum((-4, sympy.Rational(1, 239)))
+    a = 16 * arccotan(5)
+    b = -4 * arccotan(239)
 
     assert isinstance(a + b, AbstractTerm)
 
@@ -26,8 +26,8 @@ def test_add():
 
 
 def test_sub():
-    a = ArctanSum((16, sympy.Rational(1, 5)))
-    b = ArctanSum((4, sympy.Rational(1, 239)))
+    a = 16 * arccotan(5)
+    b = 4 * arccotan(239)
 
     assert isinstance(a - b, AbstractTerm)
 
@@ -35,7 +35,7 @@ def test_sub():
 
 
 def test_multiply():
-    a = ArctanSum((4, sympy.Rational(1, 5)), (-1, sympy.Rational(1, 239)))
+    a = 4 * arccotan(5) - arccotan(239)
 
     assert isinstance(4 * a, AbstractTerm)
     assert isinstance(a * 4, AbstractTerm)
@@ -45,7 +45,7 @@ def test_multiply():
 
 
 def test_division():
-    a = ArctanSum((64, sympy.Rational(1, 5)), (-16, sympy.Rational(1, 239)))
+    a = 64 * arccotan(5) - 16 * arccotan(239)
 
     assert isinstance(a / 4, AbstractTerm)
 

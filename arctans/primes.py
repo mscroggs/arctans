@@ -1,7 +1,7 @@
 """Mathematical utility functions."""
 
 from functools import cache
-from arctans.gaussian_integer import GaussianInteger
+from arctans.numbers import GaussianInteger
 
 primes = [2]
 
