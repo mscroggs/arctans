@@ -29,7 +29,7 @@ python3 -m pytest test/
 arctans can be used to represent arctans and sums of arctans symbolically
 and generate arctan sums equivalent to a given set of sums.
 
-For example, Machin's formula for pi ($\pi=16\arctan(1/5)-4\arctan(1/239)$) can
+For example, Machin's formula for pi (pi = 16arctan(1/5) - 4arctan(1/239)) can
 be created with:
 
 ```python
@@ -69,9 +69,7 @@ for f in formulae:
 ```
 
 This will print a number of different arctan sum formulae, including
-`16*[4] + -16*[21] + -4*[239]`, ie
-
-$\pi=16\arctan(1/4)-16\arctan(1/21)-4\arctan(1/239)$
+`16*[4] + -16*[21] + -4*[239]` (ie pi = 16arctan(1/4) - 16arctan(1/21) - 4arctan(1/239)).
 
 ## Further documentation
 More detailed documentation of the latest release version of arctans can be found on
