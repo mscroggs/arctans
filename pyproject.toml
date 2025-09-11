@@ -1,14 +1,14 @@
 [project]
 name = "arctans"
-version = "0.1.0"
+version = "0.1.0-dev"
 description = "a library for reducing arctans"
 readme = "README.md"
-requires-python = ">=3.8.0"
+requires-python = ">=3.10.0"
 license = { file = "LICENSE" }
 authors = [
     { name = "Matthew Scroggs", email = "arctans@mscroggs.co.uk" }
 ]
-dependencies = ["sympy>=1.10"]
+dependencies = ["typing_extensions; python_version < '3.11'"]
 
 [project.urls]
 homepage = "https://github.com/mscroggs/arctans"

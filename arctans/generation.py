@@ -1,7 +1,7 @@
 """Generation of new formulae."""
 
-import sympy
-from arctans.arctans import Arctan, AbstractTerm
+from arctans.arctans import arctan, AbstractTerm
+from arctans.numbers import Rational
 from arctans.reduction import reduce
 
 
@@ -33,7 +33,7 @@ def generate(
     new_formulae = []
     for denominator in range(1, max_denominator + 1):
         for numerator in range(1, max_numerator + 1):
-            a = Arctan(1, sympy.Rational(numerator, denominator))
+            a = arctan(Rational(numerator, denominator))
             zero = reduce(a) - a
             for c, t in zero.terms:
                 for f in known_formulae:
