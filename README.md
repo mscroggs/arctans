@@ -1,7 +1,7 @@
 # arctans
 
-Code for manipulating arctans to generate [Machin-like formulae](https://machin-like.org)
-and other formulae involving arctans.
+arctans is a library for manipulating arctans to generate
+[Machin-like formulae](https://machin-like.org) and other formulae involving arctans.
 
 # Installing arctans
 ## Installing from PyPI using pip
