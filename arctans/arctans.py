@@ -2,7 +2,6 @@
 
 from arctans.numbers import AbstractNumber, Integer
 from abc import ABC, abstractmethod
-from typing import Any
 import math
 
 
@@ -61,7 +60,7 @@ class AbstractTerm(ABC):
         return ArctanSum(*[(i * other, j) for i, j in self.terms])
 
     def __rmul__(self, other):
-        return ArctanSum(*[(s_o * other, j) for i, j in self.terms])
+        return ArctanSum(*[(other * i, j) for i, j in self.terms])
 
     def __truediv__(self, other):
         return ArctanSum(*[(i / other, j) for i, j in self.terms])
@@ -139,7 +138,6 @@ class ArctanSum(AbstractTerm):
                 terms_dict[a] = Integer(0)
             terms_dict[a] += c
         self._terms = [(j, i) for i, j in terms_dict.items()]
-        maxa = max(j for i, j in self._terms)
         self._terms.sort(key=lambda i: i[1])
         self._terms = [i for i in self._terms if i[0] != 0]
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])

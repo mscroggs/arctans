@@ -1,13 +1,13 @@
 """Mathematical utility functions."""
 
 from functools import cache
-from arctans.numbers import GaussianInteger
+from arctans.numbers import GaussianInteger, Integer
 
 primes = [2]
 
 
 @cache
-def pfactors(n: int) -> list[int]:
+def pfactors(n: int) -> list[Integer]:
     """Get list of all prime factors of n.
 
     Args:
@@ -18,7 +18,7 @@ def pfactors(n: int) -> list[int]:
     """
     out = []
 
-    p = 2
+    p = Integer(2)
     while n > 1:
         while n % p == 0:
             out.append(p)
@@ -28,7 +28,7 @@ def pfactors(n: int) -> list[int]:
     return out
 
 
-def largest_pfactor(n: int) -> int:
+def largest_pfactor(n: int | Integer) -> Integer:
     """Compute the largest prime factor of n.
 
     Args:
@@ -39,7 +39,8 @@ def largest_pfactor(n: int) -> int:
     """
     if n < 2:
         raise ValueError(f"Cannot find largest prime factor of {n}")
-    i = 2
+    n = Integer(int(n))
+    i = Integer(2)
     while i < n:
         if n % i == 0:
             n //= i
@@ -48,7 +49,7 @@ def largest_pfactor(n: int) -> int:
     return n
 
 
-def is_prime(n: int) -> bool:
+def is_prime(n: Integer | int) -> bool:
     """Check if an integer is prime.
 
     Args:
@@ -70,11 +71,13 @@ def is_prime(n: int) -> bool:
     return n in primes
 
 
-def is_irreducible(n: int) -> bool:
+def is_irreducible(n: Integer | int) -> bool:
     """Check if arctan(n) is irreducible.
 
-    An arctan is irreducible if it cannot be written as a
-    weighted sum of integer arccotangents.
+    An arctan is irreducible iff it cannot be written as a
+    weighted sum of integer arccotangents, or equivalently
+    arctan(n) is irreducible iff the largest prime factor of
+    1 + n**2 is greater than or equal to 2*n.
 
     Args:
         n: An integer

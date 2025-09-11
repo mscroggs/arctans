@@ -1,4 +1,3 @@
-import sympy
 import math
 from arctans import arccotan, convert_rational, reduce
 from utils import isclose

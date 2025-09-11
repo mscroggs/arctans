@@ -21,19 +21,13 @@ def convert_rational_single_arctan(a: Arctan) -> AbstractTerm:
     alpha = a.terms[0][1].denominator
 
     out = Zero()
-    print("a", out, type(out))
     sign = 1
     while beta > 0:
         n = alpha // beta
         alpha, beta = alpha * n + beta, alpha % beta
-        print("v", a.terms[0][0], type(a.terms[0][0]))
-        print("w", arccotan(n), type(arccotan(n)))
-        print("x", a.terms[0][0] * arccotan(n), type(a.terms[0][0] * arccotan(n)))
         assert isinstance(a.terms[0][0] * arccotan(n), AbstractTerm)
-        print("y", sign * a.terms[0][0] * arccotan(n), type(sign * a.terms[0][0] * arccotan(n)))
         out += sign * a.terms[0][0] * arccotan(n)
         sign *= -1
-        print("z", out, type(out))
     return out
 
 
@@ -69,7 +63,7 @@ def reduce_single_arctan(a: Arctan) -> AbstractTerm:
 
     out = Zero()
     for f in complex_factorise(n):
-        out += a.terms[0][0] * convert_rational(arctan(Rational(f.imag, f.real)))
+        out += a.terms[0][0] * convert_rational(arctan(Rational(int(f.imag), int(f.real))))
 
     c = int(_math.floor((float(a) - float(out)) * 4 / _math.pi + 0.1))
     out += c * arctan(1)

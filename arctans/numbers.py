@@ -3,6 +3,7 @@
 from __future__ import annotations
 import math as _math
 from abc import ABC, abstractmethod
+from typing import Any
 
 try:
     from typing import Self
@@ -15,12 +16,12 @@ class AbstractNumber(ABC):
 
     @property
     @abstractmethod
-    def real(self) -> AbstractNumber:
+    def real(self) -> RealNumber:
         """Real part."""
 
     @property
     @abstractmethod
-    def imag(self) -> AbstractNumber:
+    def imag(self) -> RealNumber:
         """Imaginary part."""
 
     @property
@@ -75,16 +76,40 @@ class AbstractNumber(ABC):
 
     @abstractmethod
     def _truediv(self, other: Self) -> AbstractNumber:
-        """Multiply something of the same type by this."""
+        """Divide this by something of the same type."""
+
+    def _mod(self, other: Self) -> AbstractNumber:
+        """Find the remainder when dividing this by something of the same type."""
+        return NotImplemented
+
+    def _floordiv(self, other: Self) -> AbstractNumber:
+        """Find the remainder when dividing this by something of the same type."""
+        return NotImplemented
 
     @abstractmethod
     def _eq(self, other: Self) -> bool:
         """Check if something of the same type is equal to this."""
 
+    def _pow(self, other: int) -> AbstractNumber:
+        """Raise to an integer power."""
+        if other == 0:
+            return Integer(1)
+        if other > 0:
+            return self._pow(other - 1) * self
+        if other < 0:
+            return self._pow(other + 1) / self
+
     def __add__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
             return s._add(o)
+        except ValueError:
+            return NotImplemented
+
+    def __radd__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._add(s)
         except ValueError:
             return NotImplemented
 
@@ -95,12 +120,29 @@ class AbstractNumber(ABC):
         except ValueError:
             return NotImplemented
 
+    def __rsub__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._sub(s)
+        except ValueError:
+            return NotImplemented
+
     def __mul__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
             return s._mul(o)
         except ValueError:
             return NotImplemented
+
+    def __rmul__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._mul(s)
+        except ValueError:
+            return NotImplemented
+
+    def __neg__(self):
+        return -1 * self
 
     def __truediv__(self, other: Any):
         try:
@@ -109,10 +151,57 @@ class AbstractNumber(ABC):
         except ValueError:
             return NotImplemented
 
+    def __rtruediv__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._truediv(s)
+        except ValueError:
+            return NotImplemented
+
+    def __mod__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return s._mod(o)
+        except ValueError:
+            return NotImplemented
+
+    def __rmod__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._mod(s)
+        except ValueError:
+            return NotImplemented
+
+    def __floordiv__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return s._floordiv(o)
+        except ValueError:
+            return NotImplemented
+
+    def __rfloordiv__(self, other: Any):
+        try:
+            s, o = _as_common_type(self, other)
+            return o._floordiv(s)
+        except ValueError:
+            return NotImplemented
+
     def __eq__(self, other) -> bool:
         try:
             s, o = _as_common_type(self, other)
             return s._eq(o)
+        except ValueError:
+            return NotImplemented
+
+    def __pow__(self, other):
+        try:
+            return self._pow(int(other))
+        except ValueError:
+            return NotImplemented
+
+    def __rpow__(self, other):
+        try:
+            return other ** int(self)
         except ValueError:
             return NotImplemented
 
@@ -128,27 +217,34 @@ class AbstractNumber(ABC):
     def __imul__(self, other):
         return self * other
 
-    def __mod__(self, other):
-        raise NotImplementedError()  # TODO
-        if isinstance(other, AbstractNumber):
-            num = self * other.conjugate()
-            denom = (other * other.conjugate()).real
-            return GaussianInteger(num.real % denom, num.imag % denom)
-        return NotImplemented
-
-    def __floordiv__(self, other):
-        raise NotImplementedError()  # TODO
-        if isinstance(other, AbstractNumber):
-            num = self * other.conjugate()
-            denom = (other * other.conjugate()).real
-            return GaussianInteger(num.real // denom, num.imag // denom)
-        return NotImplemented
-
     def __abs__(self):
         return _math.sqrt(self.real**2 + self.imag**2)
 
 
-class Integer(AbstractNumber):
+class RealNumber(AbstractNumber):
+    """A real number."""
+
+    @property
+    def imag(self) -> AbstractNumber:
+        return Integer(0)
+
+    def conjugate(self) -> AbstractNumber:
+        return self
+
+    def __lt__(self, other) -> bool:
+        return int((self - other).numerator) < 0
+
+    def __le__(self, other) -> bool:
+        return int((self - other).numerator) <= 0
+
+    def __gt__(self, other) -> bool:
+        return int((self - other).numerator) > 0
+
+    def __ge__(self, other) -> bool:
+        return int((self - other).numerator) >= 0
+
+
+class Integer(RealNumber):
     """An integer."""
 
     def __init__(self, i: int):
@@ -168,13 +264,6 @@ class Integer(AbstractNumber):
     @property
     def real(self) -> AbstractNumber:
         return self._i
-
-    @property
-    def imag(self) -> AbstractNumber:
-        return Integer(0)
-
-    def conjugate(self) -> AbstractNumber:
-        return self
 
     @property
     def numerator(self) -> AbstractNumber:
@@ -212,11 +301,20 @@ class Integer(AbstractNumber):
     def _truediv(self, other: Self) -> AbstractNumber:
         return Rational(self._i, other._i)
 
+    def _pow(self, other: int) -> AbstractNumber:
+        return Integer(self._i ** other)
+
+    def _mod(self, other: Self) -> AbstractNumber:
+        return Integer(self._i % other._i)
+
+    def _floordiv(self, other: Self) -> AnyNumber:
+        return Integer(self._i // other._i)
+
     def _eq(self, other: Self) -> bool:
         return self._i == other._i
 
 
-class Rational(AbstractNumber):
+class Rational(RealNumber):
     """A rational number."""
 
     def __init__(self, numerator: int, denominator: int):
@@ -238,13 +336,6 @@ class Rational(AbstractNumber):
 
     @property
     def real(self) -> AbstractNumber:
-        return self
-
-    @property
-    def imag(self) -> AbstractNumber:
-        return Integer(0)
-
-    def conjugate(self) -> AbstractNumber:
         return self
 
     @property
@@ -297,6 +388,12 @@ class Rational(AbstractNumber):
         return Rational(
             self._num * other._den,
             self._den * other._num,
+        )
+
+    def _pow(self, other: int) -> AbstractNumber:
+        return Rational(
+            self._num ** other,
+            self._den ** other,
         )
 
     def _eq(self, other: Self) -> bool:
@@ -379,6 +476,16 @@ class GaussianInteger(AbstractNumber):
         num = self * other.conjugate()
         den = other * other.conjugate()
         return GaussianRational(num.real, den.real, num.imag, den.real)
+
+    def _mod(self, other: Self) -> AbstractNumber:
+        num = self * other.conjugate()
+        denom = (other * other.conjugate()).real
+        return GaussianInteger(num.real % denom, num.imag % denom)
+
+    def _floordiv(self, other: Self) -> AnyNumber:
+        num = self * other.conjugate()
+        denom = (other * other.conjugate()).real
+        return GaussianInteger(num.real // denom, num.imag // denom)
 
     def _eq(self, other: Self) -> bool:
         return self._re == other._re and self._im == other._im
@@ -477,7 +584,7 @@ class GaussianRational(AbstractNumber):
         num = self * other.conjugate()
         den = other * other.conjugate()
         re = num.real / den.real
-        im = num.imag / den.imag
+        im = num.imag / den.real
         return GaussianRational(re.numerator, re.denominator, im.numerator, im.denominator)
 
     def _eq(self, other: Self) -> bool:

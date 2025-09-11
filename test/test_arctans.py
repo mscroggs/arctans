@@ -1,5 +1,4 @@
 from math import pi
-import sympy
 from arctans import arctan, arccotan
 from arctans.arctans import AbstractTerm
 from utils import isclose

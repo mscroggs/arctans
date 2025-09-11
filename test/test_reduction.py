@@ -1,6 +1,5 @@
 import pytest
-import sympy
-from arctans import arccotan, arctan, is_irreducible, reduce, convert_rational
+from arctans import arccotan, arctan, is_irreducible, reduce, convert_rational, Rational
 from utils import isclose
 
 reducible = [3, 7, 8, 13, 17, 18, 21]
@@ -25,7 +24,7 @@ def test_convert_rational_integer(coefficient, a):
 @pytest.mark.parametrize("numerator", range(1, 20))
 @pytest.mark.parametrize("denominator", range(1, 20))
 def test_convert_rational(numerator, denominator):
-    arctan_n = arctan(sympy.Rational(numerator, denominator))
+    arctan_n = arctan(Rational(numerator, denominator))
     converted = convert_rational(arctan_n)
     assert isclose(float(arctan_n), float(converted))
     for i, j in converted.terms:
@@ -34,9 +33,11 @@ def test_convert_rational(numerator, denominator):
 
 
 @pytest.mark.parametrize("n", reducible)
-@pytest.mark.parametrize("c", [-2, -1, 1, 3, sympy.Rational(1, 2)])
+@pytest.mark.parametrize("c", [-2, -1, 1, 3, Rational(1, 2)])
 def test_reduction(c, n):
     arctan_n = c * arctan(n)
+    print(c, arctan(n))
+    print(arctan_n)
     reduced = reduce(arctan_n)
     assert isclose(float(arctan_n), float(reduced))
     assert reduced.nterms > 1
