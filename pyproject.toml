@@ -1,6 +1,6 @@
 [project]
 name = "arctans"
-version = "0.1.0"
+version = "0.1.0-dev"
 description = "a library for reducing arctans"
 readme = "README.md"
 requires-python = ">=3.11.0"
