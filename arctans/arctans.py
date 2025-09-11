@@ -149,7 +149,9 @@ class ArctanSum(AbstractTerm):
         return f"ArctanSum({self.__str__()})"
 
     def __str__(self) -> str:
-        return " + ".join(f"{i}*{_format_single_atan(j)}" for i, j in self._terms)
+        return " + ".join(f"{i}*{_format_single_atan(j)}" for i, j in self._terms).replace(
+            "+ -", "- ",
+        )
 
     @property
     def terms(self) -> list[tuple[AbstractNumber, AbstractNumber]]:
