@@ -69,7 +69,9 @@ for f in formulae:
 ```
 
 This will print a number of different arctan sum formulae, including
-`16*[4] + -16*[21] + -4*[239]` (ie `$\pi=16\arctan(1/4)-16\arctan(1/21)-4\arctan(1/239)$`).
+`16*[4] + -16*[21] + -4*[239]`, ie
+
+$\pi=16\arctan(1/4)-16\arctan(1/21)-4\arctan(1/239)$
 
 ## Further documentation
 More detailed documentation of the latest release version of arctans can be found on
