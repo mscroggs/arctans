@@ -282,7 +282,7 @@ class Integer(RealNumber):
     def __complex__(self) -> complex:
         return self._i + 0j
 
-    def _to_same_type(self, other: Any) -> Self:
+    def _to_same_type(self, other: Any) -> Integer:
         if isinstance(other, int):
             return Integer(other)
         if isinstance(other, Integer):
@@ -359,7 +359,7 @@ class Rational(RealNumber):
     def __complex__(self) -> complex:
         return float(self) + 0j
 
-    def _to_same_type(self, other: Any) -> Self:
+    def _to_same_type(self, other: Any) -> Rational:
         if isinstance(other, int):
             return Rational(other, 1)
         if isinstance(other, Integer):
@@ -456,7 +456,7 @@ class GaussianInteger(AbstractNumber):
     def __complex__(self) -> complex:
         return self._re + 1j * self._im
 
-    def _to_same_type(self, other: Any) -> Self:
+    def _to_same_type(self, other: Any) -> GaussianInteger:
         if isinstance(other, int):
             return GaussianInteger(other, 0)
         if isinstance(other, Integer):
@@ -563,7 +563,7 @@ class GaussianRational(AbstractNumber):
     def __complex__(self) -> complex:
         return self._re_num / self._re_den + 1j * self._im_num / self._im_den
 
-    def _to_same_type(self, other: Any) -> Self:
+    def _to_same_type(self, other: Any) -> GaussianRational:
         if isinstance(other, int):
             return GaussianRational(other, 1, 0, 1)
         if isinstance(other, Integer):
