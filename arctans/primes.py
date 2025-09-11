@@ -1,12 +1,10 @@
 """Mathematical utility functions."""
 
-from functools import cache
-from arctans.numbers import GaussianInteger, Integer
+from arctans.numbers import GaussianInteger, Integer, j
 
 primes = [2]
 
 
-@cache
 def pfactors(n: int) -> list[Integer]:
     """Get list of all prime factors of n.
 
@@ -39,14 +37,14 @@ def largest_pfactor(n: int | Integer) -> Integer:
     """
     if n < 2:
         raise ValueError(f"Cannot find largest prime factor of {n}")
-    n = Integer(int(n))
-    i = Integer(2)
+    n = int(n)
+    i = 2
     while i < n:
         if n % i == 0:
             n //= i
         else:
             i += 1
-    return n
+    return Integer(n)
 
 
 def is_prime(n: Integer | int) -> bool:
@@ -112,11 +110,13 @@ def is_gaussian_unit(n: GaussianInteger) -> bool:
     Returns:
         True if n is 1, -1, i or -i
     """
-    return abs(n.real) + abs(n.imag) <= 1
+    return n in [GaussianInteger(1, 0), GaussianInteger(-1, 0), j, -j]
 
 
-@cache
-def complex_factorise(n: GaussianInteger) -> list[GaussianInteger]:
+def complex_factorise(
+    n: GaussianInteger,
+    istart: int = 0,
+) -> list[GaussianInteger]:
     """Factorise a Gaussian integer into Gaussian primes.
 
     Args:
@@ -128,13 +128,9 @@ def complex_factorise(n: GaussianInteger) -> list[GaussianInteger]:
     if is_gaussian_unit(n) or is_gaussian_prime(n):
         return [n]
     lim = int(abs(n)) + 1
-    for i in range(lim + 1):
-        for j in range(-lim, lim + 1):
-            if abs(i) + abs(j) <= 1:
-                continue
-            m = GaussianInteger(i, j)
-            if not is_gaussian_prime(m):
-                continue
-            if n % m == 0:
-                return [m] + complex_factorise(n // m)
+    for re in range(istart, lim + 1):
+        for im in range(-lim, lim + 1):
+            m = GaussianInteger(re, im)
+            if abs(m) > 1 and is_gaussian_prime(m) and n % m == 0:
+                return [m] + complex_factorise(n // m, re)
     raise RuntimeError(f"Could not fund factor of non-prime number: {n}")

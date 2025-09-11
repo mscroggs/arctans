@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 try:
-    from typing import Self
+    from typing import Self  # type: ignore
 except ImportError:
     from typing_extensions import Self
 
@@ -94,9 +94,9 @@ class AbstractNumber(ABC):
         """Raise to an integer power."""
         if other == 0:
             return Integer(1)
-        if other > 0:
+        elif other > 0:
             return self._pow(other - 1) * self
-        if other < 0:
+        else:  # other < 0
             return self._pow(other + 1) / self
 
     def __add__(self, other: Any):
@@ -225,7 +225,11 @@ class RealNumber(AbstractNumber):
     """A real number."""
 
     @property
-    def imag(self) -> AbstractNumber:
+    def real(self) -> RealNumber:
+        return self
+
+    @property
+    def imag(self) -> RealNumber:
         return Integer(0)
 
     def conjugate(self) -> AbstractNumber:
@@ -260,10 +264,6 @@ class Integer(RealNumber):
 
     def __repr__(self):
         return f"Integer({self._i})"
-
-    @property
-    def real(self) -> AbstractNumber:
-        return self._i
 
     @property
     def numerator(self) -> AbstractNumber:
@@ -302,16 +302,19 @@ class Integer(RealNumber):
         return Rational(self._i, other._i)
 
     def _pow(self, other: int) -> AbstractNumber:
-        return Integer(self._i ** other)
+        return Integer(self._i**other)
 
     def _mod(self, other: Self) -> AbstractNumber:
         return Integer(self._i % other._i)
 
-    def _floordiv(self, other: Self) -> AnyNumber:
+    def _floordiv(self, other: Self) -> AbstractNumber:
         return Integer(self._i // other._i)
 
     def _eq(self, other: Self) -> bool:
         return self._i == other._i
+
+    def __abs__(self):
+        return abs(self._i)
 
 
 class Rational(RealNumber):
@@ -324,7 +327,10 @@ class Rational(RealNumber):
             numerator: The numerator
             denominator: The denominator
         """
-        hcf = _math.gcd(numerator, denominator)
+        if denominator < 0:
+            numerator *= -1
+            denominator *= -1
+        hcf = _math.gcd(abs(numerator), abs(denominator))
         self._num = numerator // hcf
         self._den = denominator // hcf
 
@@ -335,16 +341,12 @@ class Rational(RealNumber):
         return f"Rational({self.__str__()})"
 
     @property
-    def real(self) -> AbstractNumber:
-        return self
-
-    @property
     def numerator(self) -> AbstractNumber:
-        return self._num
+        return Integer(self._num)
 
     @property
     def denominator(self) -> Integer:
-        return self._den
+        return Integer(self._den)
 
     def __int__(self) -> int:
         if self._den == 1:
@@ -392,12 +394,15 @@ class Rational(RealNumber):
 
     def _pow(self, other: int) -> AbstractNumber:
         return Rational(
-            self._num ** other,
-            self._den ** other,
+            self._num**other,
+            self._den**other,
         )
 
     def _eq(self, other: Self) -> bool:
         return self._num == other._num and self._den == other._den
+
+    def __abs__(self):
+        return abs(float(self))
 
 
 class GaussianInteger(AbstractNumber):
@@ -420,12 +425,12 @@ class GaussianInteger(AbstractNumber):
         return f"GaussianInteger({self._re}+{self._im}j)"
 
     @property
-    def real(self) -> AbstractNumber:
-        return self._re
+    def real(self) -> RealNumber:
+        return Integer(self._re)
 
     @property
-    def imag(self) -> AbstractNumber:
-        return self._im
+    def imag(self) -> RealNumber:
+        return Integer(self._im)
 
     def conjugate(self) -> AbstractNumber:
         return GaussianInteger(self._re, -self._im)
@@ -475,17 +480,17 @@ class GaussianInteger(AbstractNumber):
     def _truediv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
         den = other * other.conjugate()
-        return GaussianRational(num.real, den.real, num.imag, den.real)
+        return GaussianRational(num._re, den._re, num._im, den._re)
 
     def _mod(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
-        denom = (other * other.conjugate()).real
-        return GaussianInteger(num.real % denom, num.imag % denom)
+        den = (other * other.conjugate())._re
+        return GaussianInteger(num._re % den, num._im % den)
 
-    def _floordiv(self, other: Self) -> AnyNumber:
+    def _floordiv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
-        denom = (other * other.conjugate()).real
-        return GaussianInteger(num.real // denom, num.imag // denom)
+        denom = (other * other.conjugate())._re
+        return GaussianInteger(num._re // denom, num._im // denom)
 
     def _eq(self, other: Self) -> bool:
         return self._re == other._re and self._im == other._im
@@ -503,10 +508,16 @@ class GaussianRational(AbstractNumber):
             im_numerator: The numerator of the imaginary part
             im_denominator: The denominator of the imaginary part
         """
-        hcf = _math.gcd(re_numerator, re_denominator)
+        if re_denominator < 0:
+            re_numerator *= -1
+            re_denominator *= -1
+        if im_denominator < 0:
+            im_numerator *= -1
+            im_denominator *= -1
+        hcf = _math.gcd(abs(re_numerator), abs(re_denominator))
         self._re_num = re_numerator // hcf
         self._re_den = re_denominator // hcf
-        hcf = _math.gcd(im_numerator, im_denominator)
+        hcf = _math.gcd(abs(im_numerator), abs(im_denominator))
         self._im_num = im_numerator // hcf
         self._im_den = im_denominator // hcf
 
@@ -517,11 +528,11 @@ class GaussianRational(AbstractNumber):
         return f"GaussianRational({self})"
 
     @property
-    def real(self) -> AbstractNumber:
+    def real(self) -> RealNumber:
         return Rational(self._re_num, self._re_den)
 
     @property
-    def imag(self) -> AbstractNumber:
+    def imag(self) -> RealNumber:
         return Rational(self._im_num, self._im_den)
 
     def conjugate(self) -> AbstractNumber:
@@ -558,9 +569,9 @@ class GaussianRational(AbstractNumber):
         if isinstance(other, Integer):
             return GaussianRational(int(other), 1, 0, 1)
         if isinstance(other, Rational):
-            return GaussianRational(other.numerator, other.denominator, 0, 1)
+            return GaussianRational(int(other.numerator), int(other.denominator), 0, 1)
         if isinstance(other, GaussianInteger):
-            return GaussianRational(other.real, 1, other.imag, 1)
+            return GaussianRational(int(other.real), 1, int(other.imag), 1)
         if isinstance(other, GaussianRational):
             return other
         raise ValueError(f"Could not convert {other} to Gaussian rational")
@@ -568,24 +579,32 @@ class GaussianRational(AbstractNumber):
     def _add(self, other: Self) -> AbstractNumber:
         re = self.real + other.real
         im = self.imag + other.imag
-        return GaussianRational(re.numerator, re.denominator, im.numerator, im.denominator)
+        return GaussianRational(
+            int(re.numerator), int(re.denominator), int(im.numerator), int(im.denominator)
+        )
 
     def _sub(self, other: Self) -> AbstractNumber:
         re = self.real - other.real
         im = self.imag - other.imag
-        return GaussianRational(re.numerator, re.denominator, im.numerator, im.denominator)
+        return GaussianRational(
+            int(re.numerator), int(re.denominator), int(im.numerator), int(im.denominator)
+        )
 
     def _mul(self, other: Self) -> AbstractNumber:
         re = self.real * other.real - self.imag * other.imag
         im = self.real * other.imag + self.imag * other.real
-        return GaussianRational(re.numerator, re.denominator, im.numerator, im.denominator)
+        return GaussianRational(
+            int(re.numerator), int(re.denominator), int(im.numerator), int(im.denominator)
+        )
 
     def _truediv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
         den = other * other.conjugate()
         re = num.real / den.real
         im = num.imag / den.real
-        return GaussianRational(re.numerator, re.denominator, im.numerator, im.denominator)
+        return GaussianRational(
+            int(re.numerator), int(re.denominator), int(im.numerator), int(im.denominator)
+        )
 
     def _eq(self, other: Self) -> bool:
         return self.real == other.real and self.imag == other.imag
@@ -607,7 +626,7 @@ def _simplify_type(i: AbstractNumber) -> AbstractNumber:
     return i
 
 
-def _as_common_type(a: AbstractNumber, b: Any) -> (AbstractNumber, AbstractNumber):
+def _as_common_type(a: AbstractNumber, b: Any) -> tuple[AbstractNumber, AbstractNumber]:
     """Convert a and b to the same type."""
     try:
         return a, a._to_same_type(b)
@@ -623,3 +642,8 @@ def _as_common_type(a: AbstractNumber, b: Any) -> (AbstractNumber, AbstractNumbe
         return i._to_same_type(a), i._to_same_type(b)
     except ValueError:
         raise ValueError(f"Could not find common type for {a} and {b}")
+
+
+j = GaussianInteger(0, 1)
+zero = Integer(0)
+one = Integer(1)

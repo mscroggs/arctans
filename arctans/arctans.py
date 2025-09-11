@@ -1,6 +1,6 @@
 """Arctans."""
 
-from arctans.numbers import AbstractNumber, Integer
+from arctans.numbers import AbstractNumber, Integer, RealNumber
 from abc import ABC, abstractmethod
 import math
 
@@ -70,6 +70,9 @@ class AbstractTerm(ABC):
         """Number of terms."""
         return len(self.terms)
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
 
 class Zero(AbstractTerm):
     """Zero."""
@@ -129,16 +132,16 @@ class ArctanSum(AbstractTerm):
         Args:
             terms: A list of coefficient and arctan argument pairs
         """
-        terms_dict = {}
+        terms_dict: dict[AbstractNumber, AbstractNumber] = {}
         for c, a in terms:
-            if a < 0:
+            if isinstance(a, RealNumber) and a < 0:
                 a *= -1
                 c *= -1
             if a not in terms_dict:
                 terms_dict[a] = Integer(0)
             terms_dict[a] += c
         self._terms = [(j, i) for i, j in terms_dict.items()]
-        self._terms.sort(key=lambda i: i[1])
+        self._terms.sort(key=lambda i: i[1].real)
         self._terms = [i for i in self._terms if i[0] != 0]
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])
 
@@ -157,7 +160,7 @@ class ArctanSum(AbstractTerm):
         return {j: i for i, j in self._terms}
 
 
-def arctan(a: AbstractTerm | int) -> AbstractTerm:
+def arctan(a: AbstractNumber | int) -> AbstractTerm:
     """Symbolic arctangent.
 
     Args:
@@ -169,7 +172,7 @@ def arctan(a: AbstractTerm | int) -> AbstractTerm:
     """
     if isinstance(a, int):
         a = Integer(a)
-    if a < 0:
+    if isinstance(a, RealNumber) and a < 0:
         return -arctan(-a)
     if a == 0:
         return Zero()
@@ -177,7 +180,7 @@ def arctan(a: AbstractTerm | int) -> AbstractTerm:
     return Arctan(a)
 
 
-def arccotan(a: AbstractTerm | int) -> AbstractTerm:
+def arccotan(a: AbstractNumber | int) -> AbstractTerm:
     """Symbolic arccotangent.
 
     Args:
