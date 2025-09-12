@@ -20,7 +20,7 @@ docs = ["sphinx", "sphinx-autoapi"]
 test = ["pytest"]
 
 [tool.setuptools]
-py-modules = ["arctans"]
+packages = ["arctans"]
 
 [tool.ruff]
 line-length = 100
