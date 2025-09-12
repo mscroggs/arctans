@@ -92,7 +92,7 @@ If you want to directly submit code to arctans, you can do this by forking the a
 If you want to contribute, but are unsure where to start, have a look at the
 [issues labelled "good first issue"](https://github.com/mscroggs/arctans/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
-On opening a pull request, unit tests and ruff amy mypy style checks will run. You can click on these in the pull request
+On opening a pull request, unit tests and ruff and mypy style checks will run. You can click on these in the pull request
 to see where (if anywhere) there are errors in your code.
 
 ## Code of conduct
