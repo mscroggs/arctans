@@ -8,7 +8,6 @@ license = "MIT"
 authors = [
     { name = "Matthew Scroggs", email = "arctans@mscroggs.co.uk" }
 ]
-packages = ["arctans"]
 dependencies = ["typing_extensions; python_version < '3.11'"]
 
 [project.urls]
@@ -19,6 +18,9 @@ repository = "https://github.com/mscroggs/arctans"
 style = ["ruff", "mypy"]
 docs = ["sphinx", "sphinx-autoapi"]
 test = ["pytest"]
+
+[tool.setuptools]
+py-modules = ["arctans"]
 
 [tool.ruff]
 line-length = 100
