@@ -2,7 +2,7 @@
 arctans demos
 #############
 
-.. toctree
+.. toctree::
    :titlesonly:
 
    generate_formulae

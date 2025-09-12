@@ -9,3 +9,4 @@ Documentation index
    :titlesonly:
 
    demos/index
+   docs/index
