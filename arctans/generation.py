@@ -1,12 +1,13 @@
 """Generation of new formulae."""
 
 from arctans.arctans import arctan, AbstractTerm
-from arctans.numbers import Rational
+from arctans.numbers import Integer
 from arctans.reduction import reduce
+from typing import Sequence
 
 
 def generate(
-    known_formulae: list[AbstractTerm],
+    known_formula: AbstractTerm | Sequence[AbstractTerm],
     *,
     max_denominator: int = 100,
     max_numerator: int = 1,
@@ -16,7 +17,7 @@ def generate(
     """Generate new formulae.
 
     Args:
-        known_formulae: Known formulae that all have the same value
+        known_formula: Known formula or formulae that all have the same value
         max_numerator: The maximum numerator to use for arctan arguments
         max_denominator: The maximum denominator to use for arctan arguments
         max_terms: The maximum number of arctan terms to include in the new formulae
@@ -24,16 +25,20 @@ def generate(
             coefficients in the new formulae
 
     Returns:
-        A list of new formulae that have the same value as the known formulae
+        A list of new formulae that have the same value as the known formula(e)
     """
-    value = float(known_formulae[0])
-    for i in known_formulae[1:]:
-        assert abs(float(i) - value) < 0.0001
-
+    if isinstance(known_formula, AbstractTerm):
+        value = float(known_formula)
+        known_formulae: Sequence[AbstractTerm] = [known_formula]
+    else:
+        value = float(known_formula[0])
+        for i in known_formula[1:]:
+            assert abs(float(i) - value) < 0.0001
+        known_formulae = known_formula
     new_formulae = []
     for denominator in range(1, max_denominator + 1):
         for numerator in range(1, max_numerator + 1):
-            a = arctan(Rational(numerator, denominator))
+            a = arctan(Integer(numerator) / denominator)
             zero = reduce(a) - a
             for c, t in zero.terms:
                 for f in known_formulae:
@@ -41,7 +46,7 @@ def generate(
                         new_f = f - zero * f.term_dict[t] / c
                         if new_f in known_formulae or new_f in new_formulae:
                             continue
-                        if max_terms is not None and len(new_f.terms) >= max_terms:
+                        if max_terms is not None and len(new_f.terms) > max_terms:
                             continue
                         if (
                             max_coefficient_denominator is not None

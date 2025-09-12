@@ -95,94 +95,94 @@ class AbstractNumber(ABC):
         if other == 0:
             return Integer(1)
         elif other > 0:
-            return self._pow(other - 1) * self
+            return _simplify_type(self._pow(other - 1) * self)
         else:  # other < 0
-            return self._pow(other + 1) / self
+            return _simplify_type(self._pow(other + 1) / self)
 
     def __add__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._add(o)
+            return _simplify_type(s._add(o))
         except ValueError:
             return NotImplemented
 
     def __radd__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._add(s)
+            return _simplify_type(o._add(s))
         except ValueError:
             return NotImplemented
 
     def __sub__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._sub(o)
+            return _simplify_type(s._sub(o))
         except ValueError:
             return NotImplemented
 
     def __rsub__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._sub(s)
+            return _simplify_type(o._sub(s))
         except ValueError:
             return NotImplemented
 
     def __mul__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._mul(o)
+            return _simplify_type(s._mul(o))
         except ValueError:
             return NotImplemented
 
     def __rmul__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._mul(s)
+            return _simplify_type(o._mul(s))
         except ValueError:
             return NotImplemented
 
     def __neg__(self):
-        return -1 * self
+        return _simplify_type(-1 * self)
 
     def __truediv__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._truediv(o)
+            return _simplify_type(s._truediv(o))
         except ValueError:
             return NotImplemented
 
     def __rtruediv__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._truediv(s)
+            return _simplify_type(o._truediv(s))
         except ValueError:
             return NotImplemented
 
     def __mod__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._mod(o)
+            return _simplify_type(s._mod(o))
         except ValueError:
             return NotImplemented
 
     def __rmod__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._mod(s)
+            return _simplify_type(o._mod(s))
         except ValueError:
             return NotImplemented
 
     def __floordiv__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return s._floordiv(o)
+            return _simplify_type(s._floordiv(o))
         except ValueError:
             return NotImplemented
 
     def __rfloordiv__(self, other: Any):
         try:
             s, o = _as_common_type(self, other)
-            return o._floordiv(s)
+            return _simplify_type(o._floordiv(s))
         except ValueError:
             return NotImplemented
 
@@ -195,13 +195,13 @@ class AbstractNumber(ABC):
 
     def __pow__(self, other):
         try:
-            return self._pow(int(other))
+            return _simplify_type(self._pow(int(other)))
         except ValueError:
             return NotImplemented
 
     def __rpow__(self, other):
         try:
-            return other ** int(self)
+            return _simplify_type(other ** int(self))
         except ValueError:
             return NotImplemented
 
@@ -480,17 +480,17 @@ class GaussianInteger(AbstractNumber):
     def _truediv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
         den = other * other.conjugate()
-        return GaussianRational(num._re, den._re, num._im, den._re)
+        return GaussianRational(int(num.real), int(den), int(num.imag), int(den))
 
     def _mod(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
-        den = (other * other.conjugate())._re
-        return GaussianInteger(num._re % den, num._im % den)
+        den = other * other.conjugate()
+        return GaussianInteger(int(num.real % den), int(num.imag % den))
 
     def _floordiv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
-        denom = (other * other.conjugate())._re
-        return GaussianInteger(num._re // denom, num._im // denom)
+        den = other * other.conjugate()
+        return GaussianInteger(int(num.real // den), int(num.imag // den))
 
     def _eq(self, other: Self) -> bool:
         return self._re == other._re and self._im == other._im
@@ -600,8 +600,8 @@ class GaussianRational(AbstractNumber):
     def _truediv(self, other: Self) -> AbstractNumber:
         num = self * other.conjugate()
         den = other * other.conjugate()
-        re = num.real / den.real
-        im = num.imag / den.real
+        re = num.real / den
+        im = num.imag / den
         return GaussianRational(
             int(re.numerator), int(re.denominator), int(im.numerator), int(im.denominator)
         )

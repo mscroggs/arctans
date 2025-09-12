@@ -141,7 +141,7 @@ class ArctanSum(AbstractTerm):
                 terms_dict[a] = Integer(0)
             terms_dict[a] += c
         self._terms = [(j, i) for i, j in terms_dict.items()]
-        self._terms.sort(key=lambda i: i[1].real)
+        self._terms.sort(key=lambda i: 1 / abs(i[1]))
         self._terms = [i for i in self._terms if i[0] != 0]
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])
 
@@ -149,7 +149,10 @@ class ArctanSum(AbstractTerm):
         return f"ArctanSum({self.__str__()})"
 
     def __str__(self) -> str:
-        return " + ".join(f"{i}*{_format_single_atan(j)}" for i, j in self._terms)
+        return " + ".join(f"{i}*{_format_single_atan(j)}" for i, j in self._terms).replace(
+            "+ -",
+            "- ",
+        )
 
     @property
     def terms(self) -> list[tuple[AbstractNumber, AbstractNumber]]:
