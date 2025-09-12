@@ -26,6 +26,7 @@ For example, Machin's formula for pi (:math:`\pi = 16\arctan(1/5) - 4\arctan(1/2
 be created with:
 
 .. code-block:: python
+
     from arctans import arctan, Rational
 
     pi = 16 * arctan(Rational(1, 5)) - 4 * arctan(Rational(1, 239))
@@ -35,6 +36,7 @@ be created with:
 Or equivalently:
 
 .. code-block:: python
+
     from arctans import arccotan
 
     pi = 16 * arccotan(5) - 4 * arccotan(239)
@@ -49,6 +51,7 @@ Once a formulae is expressed, new formulae that have the same value can be gener
 using the `generate` function, for example:
 
 .. code-block:: python
+
     from arctans import arccotan, generate
 
     pi = 16 * arccotan(5) - 4 * arccotan(239)
