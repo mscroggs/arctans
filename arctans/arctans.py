@@ -150,7 +150,8 @@ class ArctanSum(AbstractTerm):
 
     def __str__(self) -> str:
         return " + ".join(f"{i}*{_format_single_atan(j)}" for i, j in self._terms).replace(
-            "+ -", "- ",
+            "+ -",
+            "- ",
         )
 
     @property

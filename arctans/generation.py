@@ -3,10 +3,11 @@
 from arctans.arctans import arctan, AbstractTerm
 from arctans.numbers import Integer
 from arctans.reduction import reduce
+from typing import Sequence
 
 
 def generate(
-    known_formula: AbstractTerm | list[AbstractTerm],
+    known_formula: AbstractTerm | Sequence[AbstractTerm],
     *,
     max_denominator: int = 100,
     max_numerator: int = 1,
@@ -26,14 +27,14 @@ def generate(
     Returns:
         A list of new formulae that have the same value as the known formula(e)
     """
-    try:
+    if isinstance(known_formula, AbstractTerm):
+        value = float(known_formula)
+        known_formulae: Sequence[AbstractTerm] = [known_formula]
+    else:
         value = float(known_formula[0])
         for i in known_formula[1:]:
             assert abs(float(i) - value) < 0.0001
         known_formulae = known_formula
-    except TypeError:
-        value = float(known_formula)
-        known_formulae = [known_formula]
     new_formulae = []
     for denominator in range(1, max_denominator + 1):
         for numerator in range(1, max_numerator + 1):

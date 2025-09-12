@@ -68,4 +68,3 @@ print("# Machin-like formulae, including some with non-integer arccotan argument
 for f in formulae:
     print(f)
 print()
-
