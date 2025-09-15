@@ -210,6 +210,9 @@ class AbstractNumber(Representable):
     def __abs__(self):
         return math.sqrt(self.real**2 + self.imag**2)
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
 
 class RealNumber(AbstractNumber):
     """A real number."""
@@ -308,6 +311,9 @@ class Integer(RealNumber):
 
     def __abs__(self):
         return abs(self._i)
+
+    def __hash__(self):
+        return hash(self.__repr__())
 
 
 class Rational(RealNumber):

@@ -71,6 +71,9 @@ class AbstractTerm(Representable):
         """Number of terms."""
         return len(self.terms)
 
+    def __hash__(self):
+        return hash(self.__repr__())
+
 
 class Zero(AbstractTerm):
     """Zero."""
