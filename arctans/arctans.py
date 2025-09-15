@@ -1,8 +1,9 @@
 """Arctans."""
 
 from arctans.numbers import AbstractNumber, Integer, RealNumber
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import math
+from arctans.core import Representable
 
 
 def _format_single_atan(a: AbstractNumber) -> str:
@@ -12,7 +13,7 @@ def _format_single_atan(a: AbstractNumber) -> str:
     return f"arctan({a})"
 
 
-class AbstractTerm(ABC):
+class AbstractTerm(Representable):
     """Abstract term."""
 
     @property
@@ -85,6 +86,9 @@ class Zero(AbstractTerm):
     def term_dict(self) -> dict[AbstractNumber, AbstractNumber]:
         return {}
 
+    def as_latex(self) -> str:
+        return "0"
+
     def __str__(self) -> str:
         return "0"
 
@@ -116,6 +120,9 @@ class Arctan(AbstractTerm):
     def term_dict(self) -> dict[AbstractNumber, AbstractNumber]:
         return {self._arctan: Integer(1)}
 
+    def as_latex(self) -> str:
+        return f"\\arctan({self._arctan})"
+
     def __str__(self) -> str:
         return _format_single_atan(self._arctan)
 
@@ -144,6 +151,14 @@ class ArctanSum(AbstractTerm):
         self._terms.sort(key=lambda i: 1 / abs(i[1]))
         self._terms = [i for i in self._terms if i[0] != 0]
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])
+
+    def as_latex(self) -> str:
+        return " + ".join(
+            ("" if i == 1 else f"{i}") + f"\\arctan({j})" for i, j in self._terms
+        ).replace(
+            "+ -",
+            "- ",
+        )
 
     def __repr__(self) -> str:
         return f"ArctanSum({self.__str__()})"
