@@ -153,7 +153,9 @@ class ArctanSum(AbstractTerm):
         assert len(set([i[1] for i in self._terms])) == len([i[1] for i in self._terms])
 
     def as_latex(self) -> str:
-        return " + ".join(("" if i == 1 else f"{i}") + f"\\arctan({j})" for i, j in self._terms).replace(
+        return " + ".join(
+            ("" if i == 1 else f"{i}") + f"\\arctan({j})" for i, j in self._terms
+        ).replace(
             "+ -",
             "- ",
         )
