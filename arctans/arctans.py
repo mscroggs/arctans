@@ -1,7 +1,7 @@
 """Arctans."""
 
 from arctans.numbers import AbstractNumber, Integer, RealNumber
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 import math
 from arctans.core import Representable
 
