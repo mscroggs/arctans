@@ -4,7 +4,6 @@ import os
 
 import pytest
 
-
 readme_snippets = []
 
 if os.path.isfile(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../README.md")):
