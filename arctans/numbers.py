@@ -1,9 +1,10 @@
 """Numbers."""
 
 from __future__ import annotations
-import math as _math
-from abc import ABC, abstractmethod
+import math
+from abc import abstractmethod
 from typing import Any
+from arctans.core import Representable
 
 try:
     from typing import Self  # type: ignore
@@ -11,7 +12,7 @@ except ImportError:
     from typing_extensions import Self
 
 
-class AbstractNumber(ABC):
+class AbstractNumber(Representable):
     """Base class for number."""
 
     @property
@@ -48,14 +49,6 @@ class AbstractNumber(ABC):
 
     @abstractmethod
     def __complex__(self) -> complex:
-        pass
-
-    @abstractmethod
-    def __str__(self):
-        pass
-
-    @abstractmethod
-    def __repr__(self):
         pass
 
     @abstractmethod
@@ -205,9 +198,6 @@ class AbstractNumber(ABC):
         except ValueError:
             return NotImplemented
 
-    def __hash__(self):
-        return hash(self.__repr__())
-
     def __iadd__(self, other):
         return self + other
 
@@ -218,7 +208,7 @@ class AbstractNumber(ABC):
         return self * other
 
     def __abs__(self):
-        return _math.sqrt(self.real**2 + self.imag**2)
+        return math.sqrt(self.real**2 + self.imag**2)
 
 
 class RealNumber(AbstractNumber):
@@ -264,6 +254,9 @@ class Integer(RealNumber):
 
     def __repr__(self):
         return f"Integer({self._i})"
+
+    def as_latex(self) -> str:
+        return f"{self._i}"
 
     @property
     def numerator(self) -> AbstractNumber:
@@ -330,9 +323,12 @@ class Rational(RealNumber):
         if denominator < 0:
             numerator *= -1
             denominator *= -1
-        hcf = _math.gcd(abs(numerator), abs(denominator))
+        hcf = math.gcd(abs(numerator), abs(denominator))
         self._num = numerator // hcf
         self._den = denominator // hcf
+
+    def as_latex(self) -> str:
+        return f"\\frac{{{self._num}}}{{{self._den}}}"
 
     def __str__(self):
         return f"{self._num}/{self._den}"
@@ -435,6 +431,9 @@ class GaussianInteger(AbstractNumber):
     def conjugate(self) -> AbstractNumber:
         return GaussianInteger(self._re, -self._im)
 
+    def as_latex(self) -> str:
+        return f"{self._re}+{self._im}\\mathrm{{i}}"
+
     @property
     def numerator(self) -> AbstractNumber:
         return self
@@ -514,10 +513,10 @@ class GaussianRational(AbstractNumber):
         if im_denominator < 0:
             im_numerator *= -1
             im_denominator *= -1
-        hcf = _math.gcd(abs(re_numerator), abs(re_denominator))
+        hcf = math.gcd(abs(re_numerator), abs(re_denominator))
         self._re_num = re_numerator // hcf
         self._re_den = re_denominator // hcf
-        hcf = _math.gcd(abs(im_numerator), abs(im_denominator))
+        hcf = math.gcd(abs(im_numerator), abs(im_denominator))
         self._im_num = im_numerator // hcf
         self._im_den = im_denominator // hcf
 
@@ -535,6 +534,9 @@ class GaussianRational(AbstractNumber):
     def imag(self) -> RealNumber:
         return Rational(self._im_num, self._im_den)
 
+    def as_latex(self) -> str:
+        return f"\\frac{{{self._re_num}}}{{{self._re_den}}}+\\frac{{{self._im_num}}}{{{self._im_den}}}\\mathrm{{i}}"
+
     def conjugate(self) -> AbstractNumber:
         return GaussianRational(self._re_num, self._re_den, -self._im_num, self._im_den)
 
@@ -548,7 +550,7 @@ class GaussianRational(AbstractNumber):
 
     @property
     def denominator(self) -> Integer:
-        return Integer(_math.lcm(self._re_den, self._im_den))
+        return Integer(math.lcm(self._re_den, self._im_den))
 
     def __int__(self) -> int:
         if self._im_num == 0 and self._re_den == 1:

@@ -6,4 +6,4 @@ from arctans.primes import is_irreducible
 from arctans.reduction import reduce, convert_rational
 from arctans.generation import generate
 
-__version__ = "0.2.0"
+__version__ = "0.2.0-dev"
