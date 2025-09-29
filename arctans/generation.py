@@ -1,7 +1,7 @@
 """Generation of new formulae."""
 
 from arctans.arctans import arctan, AbstractTerm
-from arctans.numbers import Integer
+from arctans.numbers import Rational
 from arctans.reduction import reduce
 from typing import Sequence
 
@@ -13,6 +13,7 @@ def generate(
     max_numerator: int = 1,
     max_terms: int | None = None,
     max_coefficient_denominator: int | None = None,
+    printing: bool = False
 ) -> list[AbstractTerm]:
     """Generate new formulae.
 
@@ -38,7 +39,9 @@ def generate(
     new_formulae = []
     for denominator in range(1, max_denominator + 1):
         for numerator in range(1, max_numerator + 1):
-            a = arctan(Integer(numerator) / denominator)
+            if printing:
+                print(numerator, denominator)
+            a = arctan(Rational(numerator, denominator))
             zero = reduce(a) - a
             for c, t in zero.terms:
                 for f in known_formulae:
