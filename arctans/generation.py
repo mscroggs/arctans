@@ -13,7 +13,7 @@ def generate(
     max_numerator: int = 1,
     max_terms: int | None = None,
     max_coefficient_denominator: int | None = None,
-    printing: bool = False
+    printing: bool = False,
 ) -> list[AbstractTerm]:
     """Generate new formulae.
 
