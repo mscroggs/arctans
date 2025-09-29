@@ -42,16 +42,18 @@ print()
 # Some additional keyword arguements can be passed into generate to control some
 # properties of the formulae it will create:
 #
-#   - max_denominator can be used to control the maximum denominator of an arctan
-#     argument that can appear in the formulae. By default a value of 100 is used
-#     for this parameter.
-#   - max_numerator can be used to control the maximum numerator of an arctan
-#     argument that can appear in the formulae. By default a value of 1 is used
-#     for this parameter.
+#   - min_denominator and max_denominator can be used to control the minimum and
+#     maximum denominator of an arctan argument that can appear in the formulae.
+#     By default, 1 is used for the minimum and 100 for the maximum.
+#   - min_numerator and max_numerator can be used to control the minimum and
+#     maximum numerator of an arctan argument that can appear in the formulae.
+#     By default, 1 is used for the minimum and 1 for the maximum.
 #   - max_terms can be used to control the maximum number of terms that each
 #     formula can include. By default this is unlimited.
 #   - max_coefficient_denominator can be used to control the maximum denominator
 #     that a coefficient in a formula can have. By default this is unlimited.
+#   - printing can be set to True to print the numerators and denominators currently
+#     being tested
 #
 # For example, if you wanted to generate formulae with 3 or fewer terms you could run
 # the following.
