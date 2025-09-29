@@ -24,6 +24,7 @@ def generate(
         max_terms: The maximum number of arctan terms to include in the new formulae
         max_coefficient_denominator: The maximum allowbale denominator to use in the
             coefficients in the new formulae
+        printing: Print information about progress
 
     Returns:
         A list of new formulae that have the same value as the known formula(e)
