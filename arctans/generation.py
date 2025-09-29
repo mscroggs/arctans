@@ -9,7 +9,9 @@ from typing import Sequence
 def generate(
     known_formula: AbstractTerm | Sequence[AbstractTerm],
     *,
+    min_denominator: int = 1,
     max_denominator: int = 100,
+    min_numerator: int = 1,
     max_numerator: int = 1,
     max_terms: int | None = None,
     max_coefficient_denominator: int | None = None,
@@ -19,7 +21,9 @@ def generate(
 
     Args:
         known_formula: Known formula or formulae that all have the same value
+        min_numerator: The minimum numerator to use for arctan arguments
         max_numerator: The maximum numerator to use for arctan arguments
+        min_denominator: The minimum denominator to use for arctan arguments
         max_denominator: The maximum denominator to use for arctan arguments
         max_terms: The maximum number of arctan terms to include in the new formulae
         max_coefficient_denominator: The maximum allowbale denominator to use in the
@@ -38,8 +42,8 @@ def generate(
             assert abs(float(i) - value) < 0.0001
         known_formulae = known_formula
     new_formulae = []
-    for denominator in range(1, max_denominator + 1):
-        for numerator in range(1, max_numerator + 1):
+    for denominator in range(min_denominator, max_denominator + 1):
+        for numerator in range(min_numerator, max_numerator + 1):
             if printing:
                 print(numerator, denominator)
             a = arctan(Rational(numerator, denominator))
