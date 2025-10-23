@@ -16,33 +16,33 @@ affiliations:
    index: 1
  - name: TODO
    index: 2
-date: 16 September 2025
+date: DAY MONTH 2025
 bibliography: paper.bib
 ---
 
 # Summary
 
-Machin's formula is
-
-$$\frac{\uppi}{4}=4\arctan\left(\frac{1}{5}\right)-\arctan\left(\frac{1}{239}\right),$$
-
-or, equivalently,
+In 1706, William Jones published the following formula for $\uppi$\footnote{The formula published by Jones was actually a formula for $\uppi/4$ equivalent to the one we include here. We have decided to adopt the convention of always writing Machin-like formulae as equal $\uppi$ rather than using fractions of $\uppi$.},
+which he attributed to his "much esteem'd friend Mr John Machin" [@jones1706]:
 
 $$\uppi=16\arctan\left(\frac{1}{5}\right)-4\arctan\left(\frac{1}{239}\right).$$
 
-[@wetherfield1996]
+This formula has since become known as Machin's formula and other formulae expressing $\uppi$ as a sum of arctangents
+have become known as Machin-like formulae. It is believed [@tweddle1991] that John Machin submitted a paper containing
+Machin's formula and four other Machin-like formulae to the Royal Society in 1706. No surviving copy of this unpublished paper is known to exist, but
+the formulae believed to have been included in it were later rediscovered and published by @hermann1706, @euler1744 and @hutton1776.
+Further Machin-like formulae have been discovered in the past 300 years by
+@stormer1896, @wrench1938, @lehmer1938, @takano1983 and @wetherfield1996, among others.
 
-[@lehmer1938]
+- Method for computing them
+- Machination website + software
+- arctans
+- machin-like.org
 
-[@nimbran2010]
-
-[@kristiansen-thesis]
 
 website [@old-website] and software [@machination]
 
 [@machin-like.org]
-
-[@tweddle1991]
 
 # Statement of need
 
