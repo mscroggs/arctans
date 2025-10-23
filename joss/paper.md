@@ -38,9 +38,11 @@ $$\uppi=16\arctan\left(\frac{1}{5}\right)-4\arctan\left(\frac{1}{239}\right).$$
 
 [@kristiansen-thesis]
 
-[@old-website]
+website [@old-website] and software [@machination]
 
 [@machin-like.org]
+
+[@tweddle1991]
 
 # Statement of need
 
