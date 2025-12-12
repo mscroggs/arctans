@@ -58,7 +58,7 @@ The code used to generate the website is available under an MIT license, and uti
 # Statement of need
 While it may have had much of the same functionality as `arctans`, the fact that the Machination software is no longer available and
 appears to not have been licensed under an open source license makes the need for new library clear. Additionally, Machination was
-written to run on Windows 98 and has issues with it running on Windows ME are documented at @machination-software. It therefore seems
+written to run on Windows 98 and issues with it running on Windows ME are documented [@machination-software]. It therefore seems
 unlikely that this software would run on a modern computer even if a copy of it were obtained.
 
 We are not aware of any other Python package that is designed manipulate formulae involving arctangents.
