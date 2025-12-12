@@ -9,7 +9,7 @@ authors:
     orcid: 0000-0002-4658-2443
     affiliation: 1
   - name: Katie Steckles
-    orcid: TODO-TODO-TODO-TODO
+    orcid: 0009-0006-6022-4788
     affiliation: 2
 affiliations:
  - name: Advanced Research Computing Centre, University College London
@@ -31,7 +31,7 @@ This formula has since become known as Machin's formula and other formulae expre
 have become known as Machin-like formulae. It is believed [@tweddle1991] that John Machin submitted a paper [@machin-unpublished] containing
 Machin's formula and four other Machin-like formulae to the Royal Society in 1706. No surviving copy of this unpublished paper is known to exist, but
 the formulae included in it were later rediscovered and published by @hermann1706, @euler1744 and @hutton1776.
-Further Machin-like formulae have been discovered in the past 300 years by
+Further Machin-like formulae were discovered in the following 300 years by
 @stormer1896, @wrench1938, @lehmer1938, @takano1983 and @wetherfield1996, among others.
 
 In @todd1949, a method for generating new Machin-like formulae was proposed: by writing $\arctan(1/x)$ as $\arg(x+\mathrm{i})$ and noting that
@@ -52,8 +52,13 @@ more Machin-like formulae, but the package could also be used to generate arctan
 
 Using a list of Machin-like formulae that we compiled from the literature and the Machination website [@old-website]---alongside some new formulae
 generated using `arctans`---we have created the website \href{https://machin-like.org}{machin-like.org} [@machin-like.org].
-The website is hosted using GitHub pages, with a page for each formula generated from a plain text formula file using.
+The website is hosted using GitHub pages, with a page for each formula generated from a plain text formula file.
+Screenshots of the pages on \href{https://machin-like.org}{machin-like.org} for Machin's formula, Euler's Machin-like formula and
+a randomly selected Machin-like formula are shown in \autoref{fig:machin-like}.
 The code used to generate the website is available under an MIT license, and utilises tools originally written to generate the DefElement finite element encyclopedia [@2025-defelement].
+
+
+![The pages on \href{https://machin-like.org}{machin-like.org} for Machin's formula (top left), Euler's Machin-like formula (top right), and a randomly selected Machin-like formula (bottom). \label{fig:machin-like}](machin-like.png){ width=95% }
 
 # Statement of need
 While it may have had much of the same functionality as `arctans`, the fact that the Machination software is no longer available and
