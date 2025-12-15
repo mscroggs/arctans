@@ -14,7 +14,7 @@ authors:
 affiliations:
  - name: Advanced Research Computing Centre, University College London
    index: 1
- - name: Department of Mathematics, Manchester Metropolitan University
+ - name: Department of Computing and Mathematics, Manchester Metropolitan University
    index: 2
 date: DAY MONTH 2025
 bibliography: paper.bib
