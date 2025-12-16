@@ -1,7 +1,7 @@
 """Generation of new formulae."""
 
 from arctans.arctans import arctan, AbstractTerm
-from arctans.numbers import Integer
+from arctans.numbers import Rational
 from arctans.reduction import reduce
 from typing import Sequence
 
@@ -9,20 +9,26 @@ from typing import Sequence
 def generate(
     known_formula: AbstractTerm | Sequence[AbstractTerm],
     *,
+    min_denominator: int = 1,
     max_denominator: int = 100,
+    min_numerator: int = 1,
     max_numerator: int = 1,
     max_terms: int | None = None,
     max_coefficient_denominator: int | None = None,
+    printing: bool = False,
 ) -> list[AbstractTerm]:
     """Generate new formulae.
 
     Args:
         known_formula: Known formula or formulae that all have the same value
+        min_numerator: The minimum numerator to use for arctan arguments
         max_numerator: The maximum numerator to use for arctan arguments
+        min_denominator: The minimum denominator to use for arctan arguments
         max_denominator: The maximum denominator to use for arctan arguments
         max_terms: The maximum number of arctan terms to include in the new formulae
         max_coefficient_denominator: The maximum allowbale denominator to use in the
             coefficients in the new formulae
+        printing: Print information about progress
 
     Returns:
         A list of new formulae that have the same value as the known formula(e)
@@ -36,9 +42,11 @@ def generate(
             assert abs(float(i) - value) < 0.0001
         known_formulae = known_formula
     new_formulae = []
-    for denominator in range(1, max_denominator + 1):
-        for numerator in range(1, max_numerator + 1):
-            a = arctan(Integer(numerator) / denominator)
+    for denominator in range(min_denominator, max_denominator + 1):
+        for numerator in range(min_numerator, max_numerator + 1):
+            if printing:
+                print(numerator, denominator)
+            a = arctan(Rational(numerator, denominator))
             zero = reduce(a) - a
             for c, t in zero.terms:
                 for f in known_formulae:

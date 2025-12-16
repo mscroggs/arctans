@@ -3,7 +3,7 @@ arctans
 =======
 
 arctans is a library for manipulating arctans to generate
-[Machin-like formulae](https://machin-like.org) and other formulae involving arctans.
+`Machin-like formulae <https://machin-like.org>`__ and other formulae involving arctans.
 
 Installing arctans
 ==================
